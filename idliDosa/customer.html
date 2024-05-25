@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Idli Dosa Pindi Shop</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Idli Dosa Pindi Shop</h1>
+    <button style="width:101px; height: 30px; position: absolute; right: 6px; top: 2px;"><a href="admin.html">Admin page</a></button>
+    <form id="orderForm">
+      <div class="form-group">
+        <label for="item">Select Item:</label>
+        <select class="form-control" id="item" required>
+          <option value="Idli Pindi">Idli Pindi</option>
+          <option value="Dosa Pindi">Dosa Pindi</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number:</label>
+        <input type="text" class="form-control" id="phone" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Place Order</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('orderForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const item = document.getElementById('item').value;
+      const name = document.getElementById('name').value;
+      const phone = document.getElementById('phone').value;
+
+      const order = { item, name, phone };
+      let orders = JSON.parse(localStorage.getItem('orders')) || [];
+      orders.push(order);
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      alert('Order placed successfully!');
+      // Reset notification flag to notify admin about new order
+      localStorage.removeItem('notificationPlayed');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Idli Dosa Pindi Shop</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-center">Admin - Order Notifications</h1>
+    <button id="enableSound" class="btn btn-primary mb-3">Enable Notification Sound</button>
+    <div id="orders">
+      <h2>No new orders</h2>
+    </div>
+    <button id="clearOrders" class="btn btn-danger mt-3">Clear Orders</button>
+  </div>
+
+  <audio id="notificationSound" src="order notification sound/shopeefood_sound.mp3"></audio>
+
+  <script>
+    document.getElementById('enableSound').addEventListener('click', function() {
+      const audio = document.getElementById('notificationSound');
+      audio.play().then(() => {
+        audio.pause();
+        alert('Notification sound enabled');
+        document.getElementById('enableSound').style.display = 'none';
+      }).catch(error => {
+        alert('Click the button to enable sound notifications');
+      });
+    });
+
+    function displayOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      const ordersDiv = document.getElementById('orders');
+      if (orders.length === 0) {
+        ordersDiv.innerHTML = '<h2>No new orders</h2>';
+      } else {
+        ordersDiv.innerHTML = '<h2>New Orders</h2>';
+        orders.forEach(order => {
+          ordersDiv.innerHTML += `
+            <div class="order">
+              <p><strong>Item:</strong> ${order.item}</p>
+              <p><strong>Name:</strong> ${order.name}</p>
+              <p><strong>Phone:</strong> ${order.phone}</p>
+              <hr>
+            </div>
+          `;
+        });
+      }
+    }
+
+    function checkForNewOrder() {
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      const notificationPlayed = localStorage.getItem('notificationPlayed');
+
+      if (orders.length > 0 && !notificationPlayed) {
+        displayOrders();
+        document.getElementById('notificationSound').play();
+        localStorage.setItem('notificationPlayed', 'true');
+      } else if (orders.length === 0) {
+        displayOrders();
+        localStorage.removeItem('notificationPlayed');
+      }
+    }
+
+    document.getElementById('clearOrders').addEventListener('click', function() {
+      localStorage.removeItem('orders');
+      localStorage.removeItem('notificationPlayed');
+      displayOrders();
+    });
+
+    setInterval(checkForNewOrder, 5000); // Check every 5 seconds
+    window.onload = displayOrders;
+  </script>
+</body>
+</html>
